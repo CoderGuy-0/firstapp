@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import { Button } from 'react-native';
 import { Alert } from 'react-native';
@@ -13,19 +13,22 @@ export default function App() {
  const [ival, setIval] = useState(0);
  const [value1, setValue1] = useState('');
  const [value2, setValue2] = useState('');
+ const [data, setData] = useState([{ name: 'History'}]);
 
 
- 
 
- const handlePlusInput = () => {      // handles input
-  let tmp = parseInt(value1) + parseInt(value2);  // adds curr state and input
+ const handlePlusInput = () => { 
+  let tmp = parseInt(value1) + parseInt(value2);
   setIval(tmp);
+  setData([...data, { name: value1 + ' + ' + value2 + ' = ' + tmp}]);
 };
 
-const handleMinusInput = () => {      // handles input
-  let tmp = parseInt(value1) - parseInt(value2);  // adds curr state and input
+const handleMinusInput = () => {
+  let tmp = parseInt(value1) - parseInt(value2);
   setIval(tmp);
+  setData([...data, { name: value1 + ' - ' + value2 + ' = ' + tmp}]);
 };
+
 
   return (
 
@@ -63,11 +66,19 @@ const handleMinusInput = () => {      // handles input
         />
         
         <Button
-        value={value2}
           title="-"
           onPress={() => handleMinusInput()}
         />
+
+
       </View>
+      <View style={styles.flatStyle}>
+    <FlatList
+keyExtractor={(item, index) => index.toString()}
+data={data}
+renderItem={({ item }) => <Text>{item.name}</Text>}
+  />
+  </View>
     </View>
   );
 }
@@ -83,8 +94,15 @@ const styles = StyleSheet.create({
   fixToText: {
     
     flexDirection: 'row',
-    justifyContent: 'center',
-    width: 80, // or whatever size you need
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    width: 80,
     height: 30,
   },
+  flatStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    width: 80,
+  }
 });
